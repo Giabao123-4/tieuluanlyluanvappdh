@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mô phỏng Lừa đảo Ngân hàng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Tùy biến gradient */
+        .theme-promo { background: linear-gradient(135deg, #064e3b, #10b981); } 
+        .theme-bank { background: linear-gradient(135deg, #1e3a8a, #3b82f6); } 
+        .theme-warning { background: linear-gradient(135deg, #7f1d1d, #dc2626); }
+    </style>
+</head>
+<body class="bg-gray-200 flex items-center justify-center min-h-screen p-4 font-sans">
+
+    <!-- Container điện thoại -->
+    <div class="w-full max-w-sm bg-white shadow-2xl rounded-[30px] overflow-hidden relative border-[6px] border-gray-800">
+        
+        <!-- Thanh trạng thái ảo -->
+        <div class="bg-gray-100 flex justify-between items-center px-4 py-2 text-[10px] text-gray-500 font-bold">
+            <span>09:41</span>
+            <div class="flex gap-1">
+                <span>📶</span>
+                <span>LTE</span>
+                <span>🔋 85%</span>
+            </div>
+        </div>
+
+        <!-- Thanh URL ảo -->
+        <div class="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center gap-2">
+            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+            <div class="bg-gray-200 text-xs text-gray-600 px-3 py-1.5 rounded-md flex-1 truncate font-mono" id="fake-url">
+                thuong-ngan-hang-2023.vn
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH 1: QUẢNG CÁO NHẬN QUÀ -->
+        <div id="screen-promo" class="block">
+            <div class="theme-promo p-8 text-white text-center shadow-inner min-h-[400px] flex flex-col justify-center items-center">
+                <div class="text-6xl mb-4 drop-shadow-lg">🎁</div>
+                <h1 class="text-2xl font-black tracking-wide text-yellow-300 uppercase drop-shadow-md">Đăng ký liền tay</h1>
+                <h2 class="text-xl font-bold mt-1 mb-4 drop-shadow-md">Nhận ngay quà tặng</h2>
+                
+                <div class="bg-white text-green-700 text-4xl font-black py-3 px-6 rounded-2xl shadow-xl border-4 border-yellow-400 mb-6">
+                    500.000<sup class="text-2xl underline">đ</sup>
+                </div>
+                
+                <button onclick="showForm()" class="w-full bg-yellow-400 text-green-900 font-bold text-lg py-4 rounded-xl shadow-lg hover:bg-yellow-300 active:scale-95 transition-all animate-pulse">
+                    NHẬN QUÀ NGAY
+                </button>
+
+                <!-- Nút Quay lại trang chủ ở màn hình 1 -->
+                <a href="/" class="mt-6 text-white underline text-sm opacity-80 hover:opacity-100 transition-all">
+                    Quay lại danh sách kịch bản
+                </a>
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH 2: FORM ĐIỀN THÔNG TIN (Giả mạo ngân hàng) -->
+        <div id="screen-form" class="hidden">
+            <div class="theme-bank p-6 text-white text-center shadow-inner relative">
+                <div class="text-4xl mb-2 drop-shadow-md">🏦</div>
+                <h1 class="text-lg font-bold tracking-wide uppercase">Cổng Nhận Thưởng</h1>
+                <p class="text-xs mt-1 opacity-80">Vui lòng xác thực tài khoản để nhận tiền</p>
+            </div>
+
+            <div class="p-6">
+                <form id="phishing-form" onsubmit="showAnalysis(event)" class="space-y-4">
+                    <div class="relative">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1 uppercase tracking-wider">Tên đăng nhập / Số điện thoại</label>
+                        <input type="text" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm" placeholder="Nhập tên đăng nhập..." required>
+                    </div>
+
+                    <div class="relative">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1 uppercase tracking-wider">Mật khẩu</label>
+                        <input type="password" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm" placeholder="Nhập mật khẩu..." required>
+                    </div>
+
+                    <div class="relative">
+                        <label class="block text-[11px] font-semibold text-red-600 mb-1 uppercase tracking-wider">Mã xác thực (OTP)</label>
+                        <input type="text" class="w-full px-4 py-3 bg-red-50 border border-red-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm" placeholder="Nhập mã OTP gửi về điện thoại..." required>
+                        <p class="text-[10px] text-gray-500 mt-1 pl-1 italic">Chúng tôi cần OTP để xác nhận chuyển 500.000đ vào tài khoản của bạn.</p>
+                    </div>
+
+                    <button type="submit" class="theme-bank w-full text-white font-bold py-3.5 rounded-xl shadow-md mt-2 flex items-center justify-center gap-2 active:scale-95 transition-all">
+                        <span>Xác nhận & Nhận tiền</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH 3: PHÂN TÍCH GIÁO DỤC -->
+        <div id="screen-analysis" class="hidden">
+            <div class="theme-warning p-6 text-white text-center shadow-inner relative">
+                <div class="text-4xl mb-2 drop-shadow-md">⚠️</div>
+                <h1 class="text-lg font-bold tracking-wide uppercase">Cảnh Báo Lừa Đảo</h1>
+                <p class="text-xs mt-1 opacity-90">Bạn vừa sập bẫy một kịch bản Phishing</p>
+            </div>
+
+            <div class="p-5 space-y-4 bg-red-50 min-h-[300px]">
+                <p class="text-sm text-gray-800 font-semibold mb-2">Hãy chú ý các dấu hiệu sau:</p>
+                
+                <ul class="space-y-3 mb-6">
+                    <li class="flex items-start gap-2">
+                        <span class="text-red-500 font-bold">1.</span>
+                        <div>
+                            <p class="text-sm font-bold text-gray-800">Đánh vào lòng tham</p>
+                            <p class="text-xs text-gray-600">Những lời chào mời "nhận ngay quà tặng 500.000đ" hoặc tiền thưởng bất ngờ thường là mồi nhử để làm bạn mất cảnh giác.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-red-500 font-bold">2.</span>
+                        <div>
+                            <p class="text-sm font-bold text-gray-800">Tên miền giả mạo</p>
+                            <p class="text-xs text-gray-600">Đường link <b>thuong-ngan-hang-2023.vn</b> không phải là website chính thức của bất kỳ ngân hàng nào.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-red-500 font-bold">3.</span>
+                        <div>
+                            <p class="text-sm font-bold text-gray-800">Yêu cầu mã OTP</p>
+                            <p class="text-xs text-gray-600">Ngân hàng <b>không bao giờ</b> yêu cầu bạn cung cấp mật khẩu hoặc mã OTP qua một đường link lạ để nhận thưởng.</p>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- Các nút điều hướng -->
+                <button onclick="resetFlow()" class="w-full bg-gray-300 text-gray-800 font-bold py-3 rounded-xl shadow-md mt-4 active:scale-95 transition-all text-sm">
+                    Làm lại tình huống này
+                </button>
+
+                <!-- Nút Quay lại trang chủ chính -->
+                <a href="/" class="block text-center w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md mt-3 active:scale-95 transition-all text-sm">
+                    🏠 Quay lại trang chủ
+                </a>
+            </div>
+        </div>
+
+        <!-- Banner cảnh báo -->
+        <div class="bg-gray-800 text-white text-center py-2 text-[10px] font-bold tracking-widest uppercase">
+            ⚠️ MÔI TRƯỜNG MÔ PHỎNG GIÁO DỤC
+        </div>
+    </div>
+
+    <script>
+        function showForm() {
+            document.getElementById('screen-promo').classList.add('hidden');
+            document.getElementById('screen-form').classList.remove('hidden');
+            document.getElementById('fake-url').innerText = "ebanking-xacthuc-nhantien.com";
+        }
+
+        function showAnalysis(e) {
+            e.preventDefault();
+            document.getElementById('screen-form').classList.add('hidden');
+            document.getElementById('screen-analysis').classList.remove('hidden');
+            document.getElementById('fake-url').innerText = "he-thong-dao-tao-an-toan.vn";
+        }
+
+        function resetFlow() {
+            document.getElementById('phishing-form').reset();
+            document.getElementById('screen-analysis').classList.add('hidden');
+            document.getElementById('screen-promo').classList.remove('hidden');
+            document.getElementById('fake-url').innerText = "thuong-ngan-hang-2023.vn";
+        }
+    </script>
+</body>
+</html>

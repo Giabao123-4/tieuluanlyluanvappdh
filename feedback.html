@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân tích lừa đảo - {{ data.title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-2xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden border-t-8 border-red-600">
+        
+        <!-- Header Cảnh báo -->
+        <div class="bg-red-50 p-6 sm:p-10 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-4">
+                <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-black text-red-700 uppercase mb-2">BẠN ĐÃ SẬP BẪY!</h1>
+            <p class="text-gray-700 text-lg">Nếu đây là một trang web lừa đảo thật, thông tin của bạn đã bị đánh cắp.</p>
+        </div>
+
+        <!-- Nội dung phân tích -->
+        <div class="p-6 sm:p-10 space-y-8">
+            
+            <!-- Hiển thị lại dữ liệu nạn nhân vừa nhập (Mô phỏng) -->
+            <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    Dữ liệu đã bị gửi đi:
+                </h3>
+<ul class="space-y-2 text-sm font-mono text-gray-600 bg-black text-green-400 p-4 rounded-lg overflow-x-auto">
+    {% for field in data.inputs %}
+        {% set key = 'field_' ~ loop.index0 %}
+        <li>> {{ field.name }}: <span class="text-white">{{ submitted[key] }}</span></li>
+    {% endfor %}
+    <li>> Trạng thái: <span class="text-red-500">Đã gửi về máy chủ của Hacker</span></li>
+</ul>
+            </div>
+
+            <!-- Bước ngoặt nguy hiểm -->
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 border-l-4 border-red-500 pl-3">Sai lầm cốt lõi</h2>
+                <div class="bg-red-50 text-red-800 p-4 rounded-lg font-medium">
+                    {{ data.danger_step }}
+                </div>
+            </div>
+
+            <!-- Bảng phân tích chi tiết dấu hiệu lừa đảo -->
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 mb-4 border-l-4 border-yellow-500 pl-3">Phân tích dấu hiệu nhận biết</h2>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    {% for detail in data.analysis_details %}
+                    <div class="bg-yellow-50 border border-yellow-200 p-5 rounded-xl">
+                        <h4 class="font-bold text-yellow-800 mb-2">{{ detail.title }}</h4>
+                        <p class="text-sm text-gray-700 leading-relaxed">{{ detail.content }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer / Điều hướng -->
+        <div class="bg-gray-50 p-6 border-t border-gray-200 flex justify-center gap-4">
+            <a href="/" class="px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-colors shadow-md">
+                Về trang chủ
+            </a>
+            <a href="/scenario/{{ request.path.split('/')[-1] }}" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md">
+                Làm lại tình huống này
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

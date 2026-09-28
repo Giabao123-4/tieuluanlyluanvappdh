@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Mô phỏng tình huống</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .video-player { width: 100%; border-radius: 12px; margin-bottom: 15px; outline: none; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
+        .call-screen { display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
+        .caller-avatar { font-size: 55px; margin-bottom: 10px; animation: shake 1s infinite; }
+        .caller-name { font-size: 18px; font-weight: bold; color: #1f2937; margin-bottom: 5px; }
+        .call-status { color: #10b981; font-weight: bold; margin-bottom: 30px; font-size: 14px; animation: blink 1.5s infinite; }
+        .btn-group { display: flex; gap: 20px; width: 100%; justify-content: center; }
+        .btn-answer { background-color: #10b981; color: white; padding: 12px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; border: none; font-size: 15px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4); transition: transform 0.2s;}
+        .btn-answer:hover { transform: scale(1.05); }
+        .btn-decline { background-color: #ef4444; color: white; padding: 12px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; border: none; font-size: 15px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4); }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        @keyframes shake { 0%, 100% { transform: translate(0,0) rotate(0deg); } 25% { transform: translate(-2px,-2px) rotate(-2deg); } 50% { transform: translate(2px,2px) rotate(2deg); } 75% { transform: translate(-2px,2px) rotate(-2deg); } }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+        <div class="phone-mockup">
+            <div class="sms-header">
+                {% if data.video %}
+                    Đang có cuộc gọi đến...
+                {% else %}
+                    Tin nhắn từ: {{ data.sender }}
+                {% endif %}
+            </div>
+            
+            {% if data.video %}
+                <div id="callScreen" class="call-screen">
+                    <div class="caller-avatar">📞</div>
+                    <div class="caller-name">{{ data.sender }}</div>
+                    <div class="call-status">Đang đổ chuông...</div>
+                    <div class="btn-group">
+                        <button class="btn-decline" onclick="alert('Đây là hệ thống mô phỏng, bạn phải bắt máy để trải nghiệm kịch bản!')">Từ chối</button>
+                        <button class="btn-answer" onclick="answerCall()">Bắt máy</button>
+                    </div>
+                </div>
+
+                <!-- Video được ép chạy chế độ câm để lách luật trình duyệt -->
+                <video id="fakeCallVideo" class="video-player" muted playsinline>
+                    <source src="{{ url_for('static', filename=data.video) }}" type="video/mp4">
+                </video>
+                
+                <!-- Luồng âm thanh MP3 hoàn toàn độc lập -->
+                {% if data.audio %}
+                <audio id="fakeCallAudio">
+                    <source src="{{ url_for('static', filename=data.audio) }}" type="audio/mpeg">
+                </audio>
+                {% endif %}
+            {% endif %}
+
+            <div class="sms-bubble" id="messageBubble" {% if data.video %}style="display:none;"{% endif %}>
+                {{ data.hook_message }}<br><br>
+                <a href="/phishing/{{ id }}" class="fake-link">{{ data.fake_url_display }}</a>
+            </div>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="/" style="text-decoration: none; color: #0ea5e9; font-weight: bold;">Quay lại Trang chủ</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function answerCall() {
+            document.getElementById('callScreen').style.display = 'none';
+            var video = document.getElementById('fakeCallVideo');
+            var audio = document.getElementById('fakeCallAudio');
+            var msgBubble = document.getElementById('messageBubble');
+
+            video.style.display = 'block';
+            msgBubble.style.display = 'block';
+
+            // Kích hoạt video (hình ảnh)
+            video.play();
+            
+            // Kích hoạt MP3 (âm thanh) cùng lúc
+            if (audio) {
+                audio.volume = 1.0;
+                audio.play();
+            }
+        }
+    </script>
+</body>
+</html>

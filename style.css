@@ -1,0 +1,80 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+/* 1. NỀN CHÍNH: Xanh nhạt sáng sủa, tươi mát */
+body { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #1f2937; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 30px 20px; }
+.dashboard-container { max-width: 1200px; width: 100%; margin: 0 auto; }
+
+/* LOGO HUEDU */
+.logo-huedu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 150px;
+    height: auto;
+    object-fit: contain;
+    z-index: 10;
+}
+
+/* 2. TIÊU ĐỀ: Đổi sang màu xanh đậm để nổi bật trên nền sáng */
+.header-title { text-align: center; color: #0369a1; margin-bottom: 25px; font-size: 32px; font-weight: bold; }
+
+/* 3. THANH ĐIỀU HƯỚNG: Viền xanh, chữ xanh, khi click vào thì tô đầy màu xanh */
+.top-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+.nav-pill { padding: 10px 25px; border-radius: 25px; border: 2px solid #7dd3fc; color: #0284c7; text-decoration: none; font-weight: bold; font-size: 15px; transition: all 0.3s; background: transparent;}
+.nav-pill:hover { background: rgba(255, 255, 255, 0.5); }
+.nav-pill.active { background: #0ea5e9; color: #ffffff; border-color: #0ea5e9; }
+
+/* --- CÁC PHẦN CÒN LẠI ĐƯỢC GIỮ NGUYÊN VÀ ĐỒNG BỘ MÀU NÚT BẤM --- */
+.scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.scenario-card { background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: transform 0.2s; }
+.scenario-card:hover { transform: translateY(-5px); }
+.card-title { text-align: center; color: #333; font-size: 17px; margin-bottom: 20px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
+.card-body { display: flex; gap: 15px; }
+.card-left { display: flex; flex-direction: column; align-items: center; gap: 15px; flex-shrink: 0; }
+.card-icon { width: 65px; height: 65px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.1); }
+.icon-green { background: #10b981; color: white; }
+.icon-purple { background: #8b5cf6; color: white; }
+
+/* Nút bắt đầu đổi sang màu xanh da trời */
+.btn-start { background-color: #0ea5e9; color: white; padding: 6px 18px; text-decoration: none; border-radius: 20px; font-weight: bold; font-size: 13px; margin-top: 15px; }
+
+.phone-mockup { max-width: 400px; margin: 0 auto; background: white; border-radius: 30px; padding: 20px; box-shadow: 0 20px 25px rgba(0,0,0,0.05); border: 8px solid #e5e7eb; }
+.sms-header { text-align: center; padding-bottom: 15px; border-bottom: 1px solid #e5e7eb; margin-bottom: 20px; font-weight: bold; color: #374151;}
+.sms-bubble { background-color: #f3f4f6; padding: 15px; border-radius: 18px 18px 18px 4px; margin-bottom: 15px; line-height: 1.5; color: #1f2937; }
+.fake-link { color: #2563eb; text-decoration: underline; word-break: break-all; }
+
+.form-box { background: white; padding: 35px; border-radius: 12px; max-width: 450px; margin: 0 auto; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.05);}
+.timer-box { background-color: #fef2f2; border: 1px solid #f87171; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-size: 14px; color: #991b1b; }
+.input-wrapper { margin-bottom: 18px; text-align: left; }
+.input-label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: 500; color: #4b5563; }
+.input-field { width: 100%; padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; outline: none; }
+.input-field:invalid:focus { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }
+.input-field:valid:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+
+/* Nút xác nhận đổi sang màu xanh da trời */
+.btn { display: inline-block; padding: 12px 20px; background-color: #0ea5e9; color: white; border-radius: 8px; font-weight: 500; width: 100%; border: none; cursor: pointer; text-align: center; text-decoration: none;}
+
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+/* Vòng xoay loading cũng đổi màu xanh */
+.spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #0ea5e9; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.analysis-box { background: white; padding: 40px; border-radius: 16px; border-top: 6px solid #ef4444; max-width: 800px; margin: 0 auto; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.05);}
+.analysis-item { background-color: #fef2f2; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ef4444; }
+.analysis-item h4 { color: #b91c1c; margin-bottom: 8px; font-size: 16px; }
+
+.analyzer-container { max-width: 900px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 16px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.05);}
+.search-box { display: flex; gap: 10px; margin-bottom: 30px; }
+.search-input { flex: 1; padding: 15px 20px; font-size: 16px; border: 2px solid #e5e7eb; border-radius: 8px; outline: none; }
+/* Nút phân tích đổi màu xanh */
+.btn-analyze { padding: 0 30px; font-size: 16px; font-weight: bold; background: #0ea5e9; color: white; border: none; border-radius: 8px; cursor: pointer; }
+.result-box { margin-top: 30px; padding-top: 30px; border-top: 1px solid #e5e7eb; display: flex; flex-direction: column; gap: 20px; }
+.result-header { text-align: center; padding: 20px; border-radius: 12px; font-size: 20px; font-weight: bold; color: white; }
+.analysis-point { background: #f9fafb; padding: 20px; border-radius: 8px; border-left: 5px solid #d1d5db; }
+
+.card-icon img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 12px;
+}

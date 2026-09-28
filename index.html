@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trải Nghiệm An Toàn Thông Tin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <img src="{{ url_for('static', filename='logo_huedu.png') }}"
+     class="logo-huedu"
+     alt="Hue University of Education">
+
+        <h1 class="header-title">Không Gian Trải Nghiệm Học Tập Số</h1>
+        <div class="top-nav">
+            <a href="/" class="nav-pill active">Công cụ mô phỏng</a>
+            <a href="/analyzer" class="nav-pill">Phân tích URL</a>
+        </div>
+        <div class="scenario-grid">
+            {% for id, data in scenarios.items() %}
+            <div class="scenario-card">
+                <h3 class="card-title">{{ data.title }}</h3>
+                <div class="card-body">
+                    <div class="card-left">
+                        <div class="card-icon {{ data.color }}">
+                            {% if data.icon.endswith('.png') %}
+                                <img src="{{ url_for('static', filename=data.icon) }}" alt="Icon">
+                            {% else %}
+                                {{ data.icon }}
+                            {% endif %}
+                        </div>
+                        <a href="/scenario/{{ id }}" class="btn-start">Bắt đầu</a>
+                    </div>
+                    <div class="card-right"><p>Học sinh trải nghiệm tình huống mô phỏng để nhận diện các thủ đoạn lừa đảo tinh vi.</p></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

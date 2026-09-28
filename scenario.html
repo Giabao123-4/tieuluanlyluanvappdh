@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển tiền mô phỏng</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #edf3ff;
+            color: #172033;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone {
+            width: 100%;
+            max-width: 430px;
+            min-height: 100vh;
+            background: #f5f8ff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ==============================
+           THANH TRÊN
+        ============================== */
+
+        .topbar {
+            height: 72px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .back {
+            width: 42px;
+            font-size: 34px;
+            line-height: 1;
+            color: #173dbd;
+            cursor: pointer;
+            font-weight: 300;
+        }
+
+        .top-title {
+            flex: 1;
+            text-align: center;
+            margin-right: 42px;
+            color: #173dbd;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        /* ==============================
+           NHÃN MÔ PHỎNG
+        ============================== */
+
+        .simulation-bar {
+            background: #fff7dc;
+            border-bottom: 1px solid #f0dfa7;
+            color: #735700;
+            padding: 9px 16px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        /* ==============================
+           BƯỚC 1
+        ============================== */
+
+        #step-transfer {
+            display: block;
+        }
+
+        .content {
+            padding: 27px 24px 130px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0 0 25px;
+            color: #20283a;
+        }
+
+        .field-title {
+            font-size: 14px;
+            color: #242b3b;
+            margin-bottom: 10px;
+        }
+
+        /* NGUỒN TIỀN */
+
+        .source-card {
+            background: #ffffff;
+            border: 1px solid #d8e0ef;
+            border-radius: 15px;
+            padding: 20px 18px;
+            box-shadow: 0 2px 7px rgba(24, 57, 120, 0.04);
+            margin-bottom: 34px;
+        }
+
+        .source-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .source-name {
+            color: #183bb5;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .source-balance {
+            font-size: 25px;
+            color: #172033;
+            font-weight: 500;
+        }
+
+        .dropdown {
+            color: #183bb5;
+            font-size: 23px;
+        }
+
+        .source-note {
+            color: #8a92a1;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+
+        /* NGƯỜI NHẬN */
+
+        .receiver-card {
+            background: #ffffff;
+            border: 1px solid #d8e0ef;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 7px rgba(24, 57, 120, 0.04);
+            margin-bottom: 22px;
+        }
+
+        .receiver-bank {
+            padding: 17px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bank-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #173fc6, #5275f5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .bank-label {
+            color: #183bb5;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .bank-name {
+            font-size: 17px;
+            line-height: 1.35;
+        }
+
+        .receiver-number {
+            border-top: 1px dashed #dce1eb;
+            padding: 15px 20px;
+        }
+
+        .small-label {
+            color: #183bb5;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .account-number {
+            font-size: 18px;
+            letter-spacing: 0.4px;
+        }
+
+        .receiver-name {
+            background: #f8f9fd;
+            padding: 14px 20px;
+            color: #242b3b;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* SỐ TIỀN */
+
+        .amount-card {
+            background: #ffffff;
+            border: 1px solid #d8e0ef;
+            border-radius: 15px;
+            min-height: 88px;
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            margin-bottom: 20px;
+        }
+
+        .amount-input {
+            width: 100%;
+            border: 0;
+            outline: none;
+            background: transparent;
+            text-align: center;
+            color: #183bb5;
+            font-size: 30px;
+            font-weight: 500;
+        }
+
+        .amount-input::placeholder {
+            color: #9da6b7;
+        }
+
+        .amount-unit {
+            color: #273044;
+            font-size: 16px;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        /* NỘI DUNG */
+
+        .content-card {
+            background: #ffffff;
+            border: 1px solid #d8e0ef;
+            border-radius: 15px;
+            padding: 18px 20px;
+            margin-bottom: 25px;
+        }
+
+        .content-label {
+            color: #183bb5;
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        .content-text {
+            font-size: 16px;
+            color: #222b3b;
+        }
+
+        /* ==============================
+           NÚT DƯỚI
+        ============================== */
+
+        .bottom-buttons {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 430px;
+            background: rgba(245, 248, 255, 0.96);
+            padding: 17px 24px 22px;
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid #e4e9f2;
+            z-index: 20;
+        }
+
+        .btn-back {
+            flex: 0.9;
+            height: 57px;
+            border-radius: 30px;
+            background: white;
+            border: 2px solid #173dbd;
+            color: #173dbd;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-next {
+            flex: 1.5;
+            height: 57px;
+            border-radius: 30px;
+            background: #263bd4;
+            border: none;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-next:disabled {
+            background: #929be5;
+            cursor: not-allowed;
+        }
+
+        /* ==============================
+           BƯỚC 2 - XÁC NHẬN
+        ============================== */
+
+        #step-confirm {
+            display: none;
+        }
+
+        .confirm-content {
+            padding: 28px 24px 130px;
+        }
+
+        .transaction-box {
+            background: #ffffff;
+            border: 1px solid #d8e0ef;
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(24, 57, 120, 0.04);
+        }
+
+        .transaction-label {
+            color: #7d8696;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .transaction-amount {
+            color: #183bb5;
+            font-size: 29px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .amount-word {
+            color: #7e8795;
+            font-size: 14px;
+            padding-bottom: 21px;
+            border-bottom: 1px solid #e1e5ed;
+        }
+
+        .person-title {
+            color: #7d8696;
+            font-size: 14px;
+            margin-top: 22px;
+            margin-bottom: 13px;
+        }
+
+        .person {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 22px;
+        }
+
+        .person-icon {
+            width: 51px;
+            height: 51px;
+            border-radius: 50%;
+            background: #edf2ff;
+            border: 1px solid #d7dff3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #173dbd;
+            font-size: 22px;
+        }
+
+        .person-name {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .person-detail {
+            color: #737d8d;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .detail-line {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #e1e5ed;
+            padding-top: 14px;
+            margin-top: 14px;
+            font-size: 14px;
+        }
+
+        .detail-line span:first-child {
+            color: #7d8696;
+        }
+
+        .detail-line span:last-child {
+            text-align: right;
+            max-width: 58%;
+            color: #242b3b;
+            font-weight: 500;
+        }
+
+        .warning-box {
+            background: #fff8dc;
+            border: 1px solid #f1dda0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 18px;
+            color: #4e4b3e;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ==============================
+           XÁC NHẬN MÔ PHỎNG
+        ============================== */
+
+        #confirm-sheet {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.68);
+            z-index: 100;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .sheet {
+            width: 100%;
+            max-width: 430px;
+            background: #fafaff;
+            border-radius: 25px 25px 0 0;
+            padding: 14px 25px 30px;
+            animation: slideUp 0.25s ease;
+        }
+
+        .sheet-handle {
+            width: 88px;
+            height: 6px;
+            background: #98a5b8;
+            border-radius: 10px;
+            margin: 0 auto 25px;
+        }
+
+        .sheet h2 {
+            text-align: center;
+            color: #183bb5;
+            font-size: 23px;
+            margin: 0 0 24px;
+        }
+
+        .sheet-warning {
+            text-align: center;
+            color: #687283;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .sheet-amount {
+            text-align: center;
+            color: #183bb5;
+            font-size: 31px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .sheet-recipient {
+            text-align: center;
+            color: #555f70;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .sheet-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .sheet-cancel,
+        .sheet-confirm {
+            flex: 1;
+            height: 54px;
+            border-radius: 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sheet-cancel {
+            background: white;
+            border: 2px solid #173dbd;
+            color: #173dbd;
+        }
+
+        .sheet-confirm {
+            background: #263bd4;
+            border: none;
+            color: white;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* ==============================
+           ĐANG XỬ LÝ
+        ============================== */
+
+        #processing {
+            display: none;
+            min-height: 100vh;
+            background: #ffffff;
+            text-align: center;
+            padding-top: 180px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #dfe5f2;
+            border-top-color: #263bd4;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 22px;
+        }
+
+        #processing h2 {
+            color: #172033;
+            font-size: 21px;
+            margin-bottom: 10px;
+        }
+
+        #processing p {
+            color: #7b8493;
+            font-size: 13px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ==============================
+           BƯỚC 3 - THÀNH CÔNG
+        ============================== */
+
+        #step-success {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #f7fbff, #eef5ff);
+            text-align: center;
+            padding: 80px 24px 40px;
+        }
+
+        .success-check {
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            background: #edf8ff;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2455db;
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        .success-title {
+            font-size: 24px;
+            margin: 0 0 14px;
+            color: #172033;
+        }
+
+        .success-amount {
+            font-size: 38px;
+            color: #183bb5;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .success-time {
+            color: #7d8696;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .success-card {
+            background: white;
+            border: 1px solid #d9e2f1;
+            border-radius: 15px;
+            padding: 22px;
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .success-recipient {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .success-bank {
+            text-align: center;
+            color: #657084;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .success-message {
+            color: #687283;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .analysis-btn {
+            width: 100%;
+            height: 55px;
+            border: none;
+            border-radius: 28px;
+            background: #263bd4;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ==============================
+           BƯỚC 4 - PHÂN TÍCH
+        ============================== */
+
+        #step-analysis {
+            display: none;
+            min-height: 100vh;
+            background: #f5f8ff;
+        }
+
+        .analysis-top {
+            background: #ffffff;
+            padding: 35px 24px 25px;
+            text-align: center;
+            border-bottom: 1px solid #e2e7f0;
+        }
+
+        .analysis-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #fff0f0;
+            color: #d92f2f;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .analysis-top h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #c62828;
+        }
+
+        .analysis-content {
+            padding: 22px 24px 35px;
+        }
+
+        .analysis-intro {
+            font-size: 14px;
+            color: #596476;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .danger {
+            background: white;
+            border: 1px solid #e1e6ef;
+            border-left: 4px solid #dd3535;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 11px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .danger strong {
+            color: #202838;
+        }
+
+        .lesson {
+            background: #eef5ff;
+            border: 1px solid #d4e3fb;
+            border-radius: 12px;
+            padding: 16px;
+            color: #315579;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-top: 20px;
+        }
+
+        .home-btn {
+            display: block;
+            text-align: center;
+            background: #263bd4;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 28px;
+            margin-top: 22px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="phone">
+
+    <!-- ==================================================
+         BƯỚC 1: CHUYỂN TIỀN
+    ================================================== -->
+
+    <div id="step-transfer">
+
+        <div class="topbar">
+
+            <div class="back"
+                 onclick="history.back()">
+                ‹
+            </div>
+
+            <div class="top-title">
+                Chuyển tiền tới số tài khoản
+            </div>
+
+        </div>
+
+        <div class="simulation-bar">
+            ⚠ Đây là giao diện giao dịch MÔ PHỎNG phục vụ học tập
+        </div>
+
+        <div class="content">
+
+            <h2 class="section-title">
+                Nguồn chuyển tiền
+            </h2>
+
+            <div class="source-card">
+
+                <div class="source-top">
+
+                    <div>
+
+                        <div class="source-name">
+                            TÀI KHOẢN THANH TOÁN
+                        </div>
+
+                        <div class="source-balance">
+                            <span id="currentBalance">
+                                5.000.000
+                            </span>
+                            VND
+                        </div>
+
+                        <div class="source-note">
+                            Tài khoản mô phỏng
+                        </div>
+
+                    </div>
+
+                    <div class="dropdown">
+                       ⌄
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <h2 class="section-title">
+                Chuyển đến
+            </h2>
+
+
+            <div class="receiver-card">
+
+                <div class="receiver-bank">
+
+                    <div class="bank-icon">
+                        N
+                    </div>
+
+                    <div>
+
+                        <div class="bank-label">
+                            Ngân hàng
+                        </div>
+
+                        <div class="bank-name">
+                            NGÂN HÀNG MÔ PHỎNG
+                        </div>
+
+                    </div>
+
+                    <div class="dropdown">
+                       ⌄
+                    </div>
+
+                </div>
+
+
+                <div class="receiver-number">
+
+                    <div class="small-label">
+                        Số tài khoản
+                    </div>
+
+                    <div class="account-number">
+                        6283940172
+                    </div>
+
+                </div>
+
+
+                <div class="receiver-name">
+                    CẢNH SÁT NHÂN DÂN
+                </div>
+
+            </div>
+
+
+            <div class="amount-card">
+
+                <input
+                    id="amount"
+                    class="amount-input"
+                    type="number"
+                    min="1"
+                    placeholder="0"
+                    inputmode="numeric"
+                >
+
+                <span class="amount-unit">
+                    VND
+                </span>
+
+            </div>
+
+
+            <div class="content-card">
+
+                <div class="content-label">
+                    Nội dung chuyển tiền
+                </div>
+
+                <div class="content-text">
+                    XAC MINH HO SO
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="bottom-buttons">
+
+            <button
+                class="btn-back"
+                onclick="goBack()">
+                Quay lại
+            </button>
+
+            <button
+                id="continueBtn"
+                class="btn-next"
+                onclick="openConfirm()"
+                disabled>
+                Tiếp tục
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         BƯỚC 2: XÁC NHẬN THÔNG TIN
+    ================================================== -->
+
+    <div id="step-confirm">
+
+        <div class="topbar">
+
+            <div class="back"
+                 onclick="backToTransfer()">
+                ‹
+            </div>
+
+            <div class="top-title">
+                Xác nhận thông tin
+            </div>
+
+        </div>
+
+        <div class="simulation-bar">
+            Giao dịch mô phỏng
+        </div>
+
+        <div class="confirm-content">
+
+            <div class="transaction-box">
+
+                <div class="transaction-label">
+                    Số tiền giao dịch
+                </div>
+
+                <div
+                    id="confirmAmount"
+                    class="transaction-amount">
+                    0 VND
+                </div>
+
+                <div
+                    id="amountWord"
+                    class="amount-word">
+                    Giao dịch mô phỏng
+                </div>
+
+
+                <div class="person-title">
+                    Người chuyển
+                </div>
+
+                <div class="person">
+
+                    <div class="person-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <div class="person-name">
+                            NGƯỜI DÙNG A
+                        </div>
+
+                        <div class="person-detail">
+                            Ngân hàng Quân Đội
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="person-title">
+                    Người nhận
+                </div>
+
+                <div class="person">
+
+                    <div class="person-icon">
+                        👮
+                    </div>
+
+                    <div>
+
+                        <div class="person-name">
+                            CẢNH SÁT NHÂN DÂN
+                        </div>
+
+                        <div class="person-detail">
+                            6283940172
+                            <br>
+                            NGÂN HÀNG Quân Đội
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-line">
+
+                    <span>
+                        Nội dung chuyển tiền
+                    </span>
+
+                    <span>
+                        XAC MINH HO SO
+                    </span>
+
+                </div>
+
+
+                <div class="detail-line">
+
+                    <span>
+                        Hình thức chuyển tiền
+                    </span>
+
+                    <span>
+                        Chuyển nhanh
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="warning-box">
+
+                ⚠️ Vui lòng kiểm tra chính xác thông tin trước khi
+                xác nhận giao dịch.
+
+            </div>
+
+        </div>
+
+
+        <div class="bottom-buttons">
+
+            <button
+                class="btn-back"
+                onclick="backToTransfer()">
+                Quay lại
+            </button>
+
+            <button
+                class="btn-next"
+                onclick="showConfirmSheet()">
+                Xác nhận
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         POPUP XÁC NHẬN MÔ PHỎNG
+    ================================================== -->
+
+    <div id="confirm-sheet">
+
+        <div class="sheet">
+
+            <div class="sheet-handle"></div>
+
+            <h2>
+                Xác nhận giao dịch
+            </h2>
+
+            <div class="sheet-warning">
+
+                Bạn đang thực hiện một giao dịch
+                <strong>mô phỏng</strong>.
+
+                <br>
+
+                Không có tiền thật được chuyển.
+
+            </div>
+
+            <div
+                id="sheetAmount"
+                class="sheet-amount">
+                0 VND
+            </div>
+
+            <div class="sheet-recipient">
+                Đến CẢNH SÁT NHÂN DÂN
+            </div>
+
+            <div class="sheet-buttons">
+
+                <button
+                    class="sheet-cancel"
+                    onclick="closeConfirmSheet()">
+                    Hủy
+                </button>
+
+                <button
+                    class="sheet-confirm"
+                    onclick="processTransfer()">
+                    Xác nhận
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         ĐANG XỬ LÝ
+    ================================================== -->
+
+    <div id="processing">
+
+        <div class="spinner"></div>
+
+        <h2>
+            Đang xử lý giao dịch
+        </h2>
+
+        <p>
+            Hệ thống đang ghi nhận giao dịch mô phỏng...
+        </p>
+
+    </div>
+
+
+    <!-- ==================================================
+         BƯỚC 3: CHUYỂN TIỀN THÀNH CÔNG
+    ================================================== -->
+
+    <div id="step-success">
+
+        <div class="success-check">
+            ✓
+        </div>
+
+        <h1 class="success-title">
+            Chuyển tiền thành công
+        </h1>
+
+        <div
+            id="successAmount"
+            class="success-amount">
+            0 VND
+        </div>
+
+        <div
+            id="successTime"
+            class="success-time">
+        </div>
+
+
+        <div class="success-card">
+
+            <div class="success-recipient">
+                CẢNH SÁT NHÂN DÂN
+            </div>
+
+            <div class="success-bank">
+
+                Ngân hàng Mô phỏng
+
+                <br>
+
+                6283940172
+
+                <br>
+
+                XAC MINH HO SO
+
+            </div>
+
+        </div>
+
+
+        <div class="success-message">
+
+           
+
+
+
+        </div>
+
+
+        <button
+            class="analysis-btn"
+            onclick="showAnalysis()">
+
+            Xem phân tích tình huống
+
+        </button>
+
+    </div>
+
+
+    <!-- ==================================================
+         BƯỚC 4: PHÂN TÍCH
+    ================================================== -->
+
+    <div id="step-analysis">
+
+        <div class="analysis-top">
+
+            <div class="analysis-icon">
+                ⚠
+            </div>
+
+            <h2>
+                Phân tích tình huống
+            </h2>
+
+        </div>
+
+
+        <div class="analysis-content">
+
+            <p class="analysis-intro">
+
+                Bạn vừa trải nghiệm một tình huống mô phỏng
+                về thủ đoạn giả danh Công an để yêu cầu
+                nạn nhân chuyển tiền.
+
+            </p>
+
+
+            <div class="danger">
+
+                <strong>01. Giả danh Công an</strong>
+
+                <br>
+
+                Đối tượng sử dụng danh nghĩa Cảnh sát/Công an
+                để tạo cảm giác đây là yêu cầu chính thức.
+
+            </div>
+
+
+            <div class="danger">
+
+                <strong>02. Tạo tâm lý sợ hãi</strong>
+
+                <br>
+
+                Nạn nhân được thông báo có liên quan đến
+                vụ án hoặc có nguy cơ bị điều tra.
+
+            </div>
+
+
+            <div class="danger">
+
+                <strong>03. Ép xử lý khẩn cấp</strong>
+
+                <br>
+
+                Đối tượng tạo áp lực khiến nạn nhân không có
+                thời gian kiểm tra thông tin.
+
+            </div>
+
+
+            <div class="danger">
+
+                <strong>04. Dẫn đến yêu cầu chuyển tiền</strong>
+
+                <br>
+
+                Nạn nhân được yêu cầu chuyển tiền với lý do
+                xác minh hoặc giải quyết vụ việc.
+
+            </div>
+
+
+            <div class="danger">
+
+                <strong>05. Tạo giao diện đáng tin cậy</strong>
+
+                <br>
+
+                Giao diện chuyển tiền được thiết kế quen thuộc
+                nhằm khiến nạn nhân mất cảnh giác.
+
+            </div>
+
+
+            <div class="danger">
+
+                <strong>06. Nguy cơ mất tài sản</strong>
+
+                <br>
+
+                Khi nạn nhân thực hiện chuyển tiền,
+                tài sản có thể bị chiếm đoạt.
+
+            </div>
+
+
+            <div class="lesson">
+
+                <strong>💡 Bài học cần nhớ</strong>
+
+                <br><br>
+
+                Không chuyển tiền theo yêu cầu bất ngờ của người
+                tự xưng là Công an hoặc cơ quan chức năng.
+
+                <br><br>
+
+                Khi nhận được yêu cầu liên quan đến vụ án,
+                hãy dừng lại và kiểm tra thông tin thông qua
+                kênh chính thức.
+
+                <br><br>
+
+                <strong>
+                    Không cung cấp thông tin cá nhân,
+                    thông tin tài khoản hoặc mã xác thực
+                    cho người lạ.
+                </strong>
+
+            </div>
+
+
+            <a
+                href="/"
+                class="home-btn">
+
+                Quay lại không gian trải nghiệm
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let transferAmount = 0;
+
+    const initialBalance = 5000000;
+
+
+    /* ==============================
+       NHẬP SỐ TIỀN
+    ============================== */
+
+    const amountInput =
+        document.getElementById("amount");
+
+    const continueBtn =
+        document.getElementById("continueBtn");
+
+
+    amountInput.addEventListener("input", function() {
+
+        const amount = Number(this.value);
+
+        if (amount > 0) {
+
+            continueBtn.disabled = false;
+
+        } else {
+
+            continueBtn.disabled = true;
+
+        }
+
+    });
+
+
+    /* ==============================
+       MỞ XÁC NHẬN
+    ============================== */
+
+    function openConfirm() {
+
+        const amount =
+            Number(amountInput.value);
+
+        if (!amount || amount <= 0) {
+
+            alert("Vui lòng nhập số tiền.");
+
+            return;
+
+        }
+
+        if (amount > initialBalance) {
+
+            alert(
+                "Số tiền vượt quá số dư của tài khoản mô phỏng."
+            );
+
+            return;
+
+        }
+
+        transferAmount = amount;
+
+
+        document.getElementById("step-transfer")
+            .style.display = "none";
+
+        document.getElementById("step-confirm")
+            .style.display = "block";
+
+
+        const formatted =
+            amount.toLocaleString("vi-VN") + " VND";
+
+
+        document.getElementById("confirmAmount")
+            .innerText = formatted;
+
+        document.getElementById("sheetAmount")
+            .innerText = formatted;
+
+
+        document.getElementById("amountWord")
+            .innerText =
+            "Số tiền: " +
+            amount.toLocaleString("vi-VN") +
+            " đồng";
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* ==============================
+       QUAY LẠI
+    ============================== */
+
+    function goBack() {
+
+        window.location.href = "/";
+
+    }
+
+
+    function backToTransfer() {
+
+        document.getElementById("step-confirm")
+            .style.display = "none";
+
+        document.getElementById("step-transfer")
+            .style.display = "block";
+
+    }
+
+
+    /* ==============================
+       POPUP XÁC NHẬN
+    ============================== */
+
+    function showConfirmSheet() {
+
+        document.getElementById("confirm-sheet")
+            .style.display = "flex";
+
+    }
+
+
+    function closeConfirmSheet() {
+
+        document.getElementById("confirm-sheet")
+            .style.display = "none";
+
+    }
+
+
+    /* ==============================
+       XỬ LÝ GIAO DỊCH
+    ============================== */
+
+    function processTransfer() {
+
+        document.getElementById("confirm-sheet")
+            .style.display = "none";
+
+        document.getElementById("step-confirm")
+            .style.display = "none";
+
+        document.getElementById("processing")
+            .style.display = "block";
+
+
+        setTimeout(function() {
+
+            document.getElementById("processing")
+                .style.display = "none";
+
+            document.getElementById("step-success")
+                .style.display = "block";
+
+
+            const formatted =
+                transferAmount.toLocaleString("vi-VN")
+                + " VND";
+
+
+            document.getElementById("successAmount")
+                .innerText = formatted;
+
+
+            const remaining =
+                initialBalance - transferAmount;
+
+
+            document.getElementById("successTime")
+                .innerText =
+                "Số dư còn lại: " +
+                remaining.toLocaleString("vi-VN") +
+                " VND";
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }, 1800);
+
+    }
+
+
+    /* ==============================
+       PHÂN TÍCH
+    ============================== */
+
+    function showAnalysis() {
+
+        document.getElementById("step-success")
+            .style.display = "none";
+
+        document.getElementById("step-analysis")
+            .style.display = "block";
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+</script>
+
+</body>
+</html>

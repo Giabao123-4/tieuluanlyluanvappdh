@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Phân tích URL</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(
+                135deg,
+                #e0f2fe,
+                #bae6fd
+            );
+
+            color: #333;
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* =====================================================
+           LOGO HUEDU
+        ===================================================== */
+
+    .logo-huedu {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        width: 150px;
+        height: auto;
+        object-fit: contain;
+        z-index: 10;
+    }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0369a1;
+            margin: 0 0 10px;
+        }
+
+        .header p {
+            color: #475569;
+            font-size: 15px;
+            margin: 6px 0;
+        }
+
+        .header .disclaimer {
+            font-size: 13px;
+            color: #64748b;
+            max-width: 750px;
+            margin: 10px auto 0;
+        }
+
+        /* =====================================================
+           SEARCH
+        ===================================================== */
+
+        .search-box {
+            display: flex;
+            background: white;
+            padding: 10px;
+            border-radius: 14px;
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.06);
+
+            margin-bottom: 35px;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-family: monospace;
+            outline: none;
+            background: transparent;
+            color: #1e293b;
+        }
+
+        .search-box button {
+            background: #0ea5e9;
+            color: white;
+
+            border: none;
+
+            padding: 0 30px;
+
+            border-radius: 9px;
+
+            font-size: 16px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            transition: 0.2s;
+        }
+
+        .search-box button:hover {
+            background: #0284c7;
+        }
+
+        /* =====================================================
+           URL SUMMARY
+        ===================================================== */
+
+        .url-card {
+            background: white;
+
+            border-radius: 14px;
+
+            padding: 18px 22px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.04);
+        }
+
+        .url-label {
+            font-size: 12px;
+            color: #64748b;
+
+            margin-bottom: 7px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+        }
+
+        .url-value {
+            font-family: monospace;
+
+            font-size: 15px;
+
+            color: #0f172a;
+
+            word-break: break-all;
+        }
+
+        /* =====================================================
+           GRID
+        ===================================================== */
+
+        .result-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 25px;
+        }
+
+        @media (max-width: 800px) {
+
+            .result-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+        /* =====================================================
+           CARD
+        ===================================================== */
+
+        .card {
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.04);
+        }
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .status-container {
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            text-align: center;
+
+            padding: 10px 0 20px;
+        }
+
+        .status-icon {
+            width: 85px;
+            height: 85px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            font-size: 42px;
+
+            margin-bottom: 15px;
+        }
+
+        .status-icon.safe {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-icon.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-icon.danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-text {
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .status-text.safe {
+            color: #16a34a;
+        }
+
+        .status-text.warning {
+            color: #d97706;
+        }
+
+        .status-text.danger {
+            color: #dc2626;
+        }
+
+        /* =====================================================
+           SCORE
+        ===================================================== */
+
+        .score-wrapper {
+            text-align: center;
+
+            margin-bottom: 20px;
+        }
+
+        .score-badge {
+            display: inline-block;
+
+            padding: 6px 15px;
+
+            border-radius: 20px;
+
+            font-weight: 700;
+
+            font-size: 14px;
+        }
+
+        .score-safe {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .score-warn {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .score-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* =====================================================
+           SECTION TITLE
+        ===================================================== */
+
+        .section-title {
+            font-size: 17px;
+
+            font-weight: 700;
+
+            color: #0369a1;
+
+            margin:
+                0 0 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+        /* =====================================================
+           DOMAIN INFORMATION
+        ===================================================== */
+
+        .domain-box {
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            padding: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .domain-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 10px 0;
+
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .domain-row:last-child {
+            border-bottom: none;
+        }
+
+        .domain-name {
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+        .domain-value {
+            text-align: right;
+
+            font-weight: 600;
+
+            font-size: 13px;
+
+            word-break: break-word;
+        }
+
+        .domain-good {
+            color: #16a34a;
+        }
+
+        .domain-bad {
+            color: #dc2626;
+        }
+
+        .domain-neutral {
+            color: #d97706;
+        }
+
+        /* =====================================================
+           DETECTION LIST
+        ===================================================== */
+
+        .detection-list {
+            list-style: none;
+
+            padding: 0;
+
+            margin: 0;
+        }
+
+        .detection-list li {
+            position: relative;
+
+            padding:
+                11px 12px 11px 35px;
+
+            margin-bottom: 10px;
+
+            background: #f8fafc;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            line-height: 1.55;
+
+            color: #475569;
+        }
+
+        .detection-list li::before {
+            content: "⚠";
+
+            position: absolute;
+
+            left: 11px;
+
+            top: 10px;
+
+            color: #f59e0b;
+        }
+
+        /* =====================================================
+           AI EXPLANATION
+        ===================================================== */
+
+        .ai-explanation {
+            background: #eff6ff;
+
+            border-left: 4px solid #0ea5e9;
+
+            border-radius: 8px;
+
+            padding: 15px;
+
+            margin-top: 20px;
+
+            color: #334155;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           AI RISKS
+        ===================================================== */
+
+        .risk-card {
+            background: #fff7ed;
+
+            border: 1px solid #fed7aa;
+
+            border-radius: 10px;
+
+            padding: 13px 15px;
+
+            margin-bottom: 10px;
+        }
+
+        .risk-title {
+            font-weight: 700;
+
+            color: #c2410c;
+
+            margin-bottom: 5px;
+
+            font-size: 14px;
+        }
+
+        .risk-detail {
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            color: #57534e;
+        }
+
+        /* =====================================================
+           REPORT
+        ===================================================== */
+
+        .report-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            font-size: 13px;
+        }
+
+        .report-table th {
+            text-align: left;
+
+            padding: 11px 8px;
+
+            color: #0369a1;
+
+            font-weight: 600;
+
+            border-bottom:
+                1px solid #bae6fd;
+        }
+
+        .report-table td {
+            padding: 13px 8px;
+
+            color: #475569;
+
+            border-bottom:
+                1px solid #e0f2fe;
+        }
+
+        .report-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* =====================================================
+           TAG
+        ===================================================== */
+
+        .tag-container {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 7px;
+
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            background: #e0f2fe;
+
+            color: #0369a1;
+
+            padding: 5px 9px;
+
+            border-radius: 6px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+        .tag-danger {
+            background: #fee2e2;
+
+            color: #b91c1c;
+        }
+
+        /* =====================================================
+           ADVICE
+        ===================================================== */
+
+        .advice-box {
+            margin-top: 20px;
+
+            background: #f0fdf4;
+
+            border:
+                1px solid #bbf7d0;
+
+            border-radius: 10px;
+
+            padding: 15px;
+        }
+
+        .advice-title {
+            font-weight: 700;
+
+            color: #166534;
+
+            margin-bottom: 8px;
+        }
+
+        .advice-box ul {
+            margin: 0;
+
+            padding-left: 20px;
+        }
+
+        .advice-box li {
+            margin-bottom: 6px;
+
+            color: #365314;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           BACK
+        ===================================================== */
+
+        .back-link-container {
+            text-align: center;
+
+            margin-top: 35px;
+
+            padding-bottom: 20px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            background: #dbeafe;
+
+            color: #0369a1;
+
+            padding: 12px 24px;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            font-size: 15px;
+
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #bfdbfe;
+
+            color: #075985;
+        }
+
+        /* =====================================================
+           RESPONSIVE LOGO
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .logo-huedu {
+                position: relative;
+                display: block;
+                left: auto;
+                top: auto;
+                width: 120px;
+                margin: 0 auto 20px;
+            }
+
+            body {
+                padding-top: 20px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box button {
+                min-height: 48px;
+                justify-content: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         LOGO HUEDU
+    ====================================================== -->
+
+    <img
+        src="{{ url_for('static', filename='logo_huedu.png') }}"
+        class="logo-huedu"
+        alt="HUEDU"
+    >
+
+    <div class="container">
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div class="header">
+
+            <h1>
+                Hệ Thống Phân Tích URL
+            </h1>
+
+            <p>
+                Phân tích cấu trúc URL và hỗ trợ nhận diện các dấu hiệu giả mạo.
+            </p>
+
+            <p class="disclaimer">
+                Kết quả là phân tích kỹ thuật hỗ trợ giáo dục,
+                không phải chứng nhận an toàn tuyệt đối của website.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+             INPUT
+        ====================================================== -->
+
+        <form
+            method="POST"
+            action="/analyzer"
+        >
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    name="url"
+                    placeholder="Nhập URL cần kiểm tra..."
+                    value="{{ url_input }}"
+                    required
+                    autocomplete="off"
+                >
+
+                <button type="submit">
+
+                    <svg
+                        width="20"
+                        height="20"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+
+                    </svg>
+
+                    Phân tích
+
+                </button>
+
+            </div>
+
+        </form>
+
+
+        {% if result %}
+
+
+        <!-- =====================================================
+             URL
+        ====================================================== -->
+
+        <div class="url-card">
+
+            <div class="url-label">
+                URL đang phân tích
+            </div>
+
+            <div class="url-value">
+                {{ result.url }}
+            </div>
+
+        </div>
+
+
+        <div class="result-grid">
+
+
+            <!-- =================================================
+                 CỘT TRÁI
+            ================================================== -->
+
+            <div>
+
+
+                <!-- STATUS -->
+
+                <div class="card">
+
+                    <div class="status-container">
+
+                        <div
+                            class="status-icon
+                            {{ result.status_info.status }}"
+                        >
+
+                            {{ result.status_info.icon }}
+
+                        </div>
+
+
+                        <div
+                            class="status-text
+                            {{ result.status_info.status }}"
+                        >
+
+                            {{ result.status_info.text }}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="score-wrapper">
+
+                        <span
+                            class="score-badge
+                            {% if result.score >= 8 %}
+                                score-danger
+                            {% elif result.score >= 5 %}
+                                score-warn
+                            {% else %}
+                                score-safe
+                            {% endif %}"
+                        >
+
+                            Mức độ rủi ro:
+                            {{ result.score }}/10
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- DOMAIN -->
+
+                    <div class="section-title">
+
+                        🔎
+
+                        Phân tích tên miền
+
+                    </div>
+
+
+                    <div class="domain-box">
+
+
+                        <div class="domain-row">
+
+                            <span class="domain-name">
+                                Domain chính
+                            </span>
+
+                            <span class="domain-value">
+                                {{ result.main_domain }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="domain-row">
+
+                            <span class="domain-name">
+                                Subdomain
+                            </span>
+
+                            <span class="domain-value">
+
+                                {% if result.subdomain %}
+
+                                    {{ result.subdomain }}
+
+                                {% else %}
+
+                                    Không có
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="domain-row">
+
+                            <span class="domain-name">
+                                Domain chính thức
+                            </span>
+
+                            <span
+                                class="domain-value
+                                {% if result.is_official %}
+                                    domain-good
+                                {% else %}
+                                    domain-neutral
+                                {% endif %}"
+                            >
+
+                                {% if result.is_official %}
+
+                                    ✓ Đã xác thực
+
+                                {% else %}
+
+                                    ⚠ Chưa xác thực
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- BRAND -->
+
+                    {% if result.brand_detected %}
+
+                        <div class="section-title">
+
+                            🏷️
+
+                            Thương hiệu được phát hiện
+
+                        </div>
+
+                        <div class="tag-container">
+
+                            {% for brand in result.brand_detected %}
+
+                                <span class="tag tag-danger">
+
+                                    {{ brand }}
+
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- TYPOSQUATTING -->
+
+                    {% if result.typos_detected %}
+
+                        <div class="section-title">
+
+                            ⚠️
+
+                            Dấu hiệu giả mạo tên miền
+
+                        </div>
+
+                        <div class="tag-container">
+
+                            {% for brand in result.typos_detected %}
+
+                                <span class="tag tag-danger">
+
+                                    Có khả năng giả mạo:
+                                    {{ brand }}
+
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- =================================================
+                     PHÁT HIỆN
+                ================================================== -->
+
+                <div
+                    class="card"
+                    style="margin-top:25px;"
+                >
+
+                    <div class="section-title">
+
+                        🔍
+
+                        Các dấu hiệu phát hiện
+
+                    </div>
+
+
+                    {% if result.ai_details %}
+
+                        <ul class="detection-list">
+
+                            {% for detail in result.ai_details %}
+
+                                <li>
+
+                                    {{ detail }}
+
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    {% else %}
+
+                        <p style="color:#64748b;font-size:14px;">
+
+                            Chưa phát hiện dấu hiệu kỹ thuật nổi bật.
+
+                        </p>
+
+                    {% endif %}
+
+
+                    <!-- KEYWORDS -->
+
+                    {% if result.keywords_detected %}
+
+                        <div
+                            class="section-title"
+                            style="margin-top:22px;"
+                        >
+
+                            🔑
+
+                            Từ khóa phát hiện
+
+                        </div>
+
+
+                        <div class="tag-container">
+
+                            {% for keyword in result.keywords_detected %}
+
+                                <span class="tag">
+
+                                    {{ keyword }}
+
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 CỘT PHẢI
+            ================================================== -->
+
+            <div>
+
+
+                <!-- AI -->
+
+                <div class="card">
+
+                    <div class="section-title">
+
+                        🤖
+
+                        Phân tích AI
+
+                    </div>
+
+
+                    {% if result.ai_analysis %}
+
+
+                        <div class="ai-explanation">
+
+                            <strong>
+                                Nhận định:
+                            </strong>
+
+                            <br><br>
+
+                            {{ result.ai_analysis.ai_explanation }}
+
+                        </div>
+
+
+                        {% if result.ai_analysis.ai_risks %}
+
+                            <div
+                                style="margin-top:20px;"
+                            >
+
+                                <div class="section-title">
+
+                                    ⚠️
+
+                                    Rủi ro được AI giải thích
+
+                                </div>
+
+
+                                {% for risk in result.ai_analysis.ai_risks %}
+
+                                    <div class="risk-card">
+
+                                        <div class="risk-title">
+
+                                            {{ risk.title }}
+
+                                        </div>
+
+                                        <div class="risk-detail">
+
+                                            {{ risk.detail }}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if result.ai_analysis.ai_advice %}
+
+                            <div class="advice-box">
+
+                                <div class="advice-title">
+
+                                    🛡️ Khuyến nghị an toàn
+
+                                </div>
+
+                                <ul>
+
+                                    {% for advice in result.ai_analysis.ai_advice %}
+
+                                        <li>
+                                            {{ advice }}
+                                        </li>
+
+                                    {% endfor %}
+
+                                </ul>
+
+                            </div>
+
+                        {% endif %}
+
+
+                    {% else %}
+
+                        <div class="ai-explanation">
+
+                            Hệ thống chưa nhận được phân tích AI.
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- =================================================
+                     REPORT
+                ================================================== -->
+
+                <div
+                    class="card"
+                    style="margin-top:25px;"
+                >
+
+                    <div class="section-title">
+
+                        📊
+
+                        Thông tin kiểm tra
+
+                    </div>
+
+
+                    <table class="report-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Thành phần
+                                </th>
+
+                                <th>
+                                    Loại
+                                </th>
+
+                                <th>
+                                    Kết quả
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for report in result.reports %}
+
+                                <tr>
+
+                                    <td
+                                        style="font-weight:600;"
+                                    >
+
+                                        {{ report.provider }}
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ report.type }}
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ report.value }}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     KẾT LUẬN
+                ================================================== -->
+
+                <div
+                    class="card"
+                    style="margin-top:25px;"
+                >
+
+                    <div class="section-title">
+
+                        🧠
+
+                        Giải thích kết quả
+
+                    </div>
+
+
+                    <p
+                        style="
+                            color:#475569;
+                            font-size:14px;
+                            line-height:1.7;
+                            margin:0;
+                        "
+                    >
+
+                        {{ result.verdict }}
+
+                    </p>
+
+
+                    <div
+                        style="
+                            margin-top:15px;
+                            padding:13px;
+                            background:#f8fafc;
+                            border-radius:9px;
+                            font-size:13px;
+                            line-height:1.6;
+                            color:#64748b;
+                        "
+                    >
+
+                        <strong>
+                            Lưu ý:
+                        </strong>
+
+                        Một URL không có dấu hiệu kỹ thuật rõ ràng
+                        không đồng nghĩa với việc website đó chắc chắn
+                        an toàn. Người dùng vẫn cần kiểm tra nguồn gửi,
+                        tên miền chính thức và không cung cấp mật khẩu,
+                        mã OTP hoặc thông tin tài chính khi chưa xác minh.
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             BACK
+        ====================================================== -->
+
+        <div class="back-link-container">
+
+            <a
+                href="/"
+                class="btn-back"
+            >
+
+                <svg
+                    width="20"
+                    height="20"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                    />
+
+                </svg>
+
+                Quay lại Trang chủ
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</body>
+</html>
